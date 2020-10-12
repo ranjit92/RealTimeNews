@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<title>Test SSE</title>
+</head>
+
+
+<script>
+
+	$(document).ready(function(){
+		var userId = Math.floor((Math.random())*1000 +1);
+		$("#userspan").text(userId);
+		var urlEndPoint = 'http://localhost:7000/subscribeUser?userId='+ userId;
+		var eventSource = new EventSource(urlEndPoint);
+		eventSource.addEventListener("latestNews",function(event){
+			console.log(event.data);
+			var articleData = JSON.parse(event.data);
+			addBlock(articleData.title, articleData.text);
+		})
+	})
+	
+	
+	function addBlock(title, text){
+		var a = document.createElement("article");
+
+		var h = document.createElement("H3")
+		var t = document.createTextNode(title);
+		h.appendChild(t);
+		
+		var para = document.createElement("P");
+		para.innerHTML = text;
+
+		a.appendChild(h);
+		a.appendChild(para);
+
+		document.getElementById("pack").appendChild(a);
+	}
+</script>
+<body>
+<nav class="navbar navbar-default">
+<div class="container-fluid">
+	<div class="navbar-header">
+		<div class="navbar-brand">Latest News here</div>
+		</div>
+	</div>
+</nav>
+
+<div class = "container pstyle text-center" id = "pack">
+	<div class = "panel panel-primary">
+		<h4> News TimeLine for user <span id="userspan" class="spanstyl"></span></h4>
+	</div>
+</div>
+
+</body>
+</html>
